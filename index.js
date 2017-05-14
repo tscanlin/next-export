@@ -101,9 +101,7 @@ module.exports = function Export () {
               props: componentProps,
               pathname: pathname,
               query,
-
               buildId,
-              exported: true,
             },
             dev,
             staticMarkup

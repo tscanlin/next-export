@@ -1,6 +1,6 @@
 # next-export
 
-Export next.js sites to be served statically. By default this outputs to a `sites` directory in the root of your project. Huge thank you to @matthewmueller for getting the initial PR going for this functionality!
+Export [next.js](https://github.com/zeit/next.js/) sites to be served statically. By default this outputs to a `sites` directory in the root of your project. Huge thank you to @matthewmueller for getting the initial PR going for this functionality (in: [#1576](https://github.com/zeit/next.js/pull/1576))!
 
 
 ## Getting Started
@@ -27,13 +27,23 @@ npm run fix-next-for-export && npm run next-export
 ```
 
 
+## `assetPrefix` option
+
+The `assetPrefix` option in `next.config.js` can be used to serve pages on github pages (example: [http://tscanlin.github.io/tocbot/](http://tscanlin.github.io/tocbot/))
+
+This allows you to serve multiple static next.js apps on a single domain.
+
+
 ## What does 'fix-next-for-export' do?
 
 It modifies some bits of `next/dist/lib/page-loader.js`
 
 Specifically it changes the functions `normalizeRoute` and `registerPage`. These changes are necessary to make index / root paths work.
 
-Normally when next.js is used server side it serves js back from paths ending in `/`. This isn't possible with static sites so we do some mapping to keep the same `/` path but actually fetch and `index` file instead.
+Normally when next.js is used server side it serves js back from paths ending in `/`. This isn't possible with static sites so we do some mapping to keep the same `/` path but actually fetch and `index` file instead. See below for the annotated code changes.
+
+It can be run multiple times and only makes the changes once. I play to open a PR to try and get these changes into next.
+
 
 ### `normalizeRoute`
 
