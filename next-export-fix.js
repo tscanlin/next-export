@@ -7,7 +7,8 @@ const SEARCH1 = `
       route = route.replace(/index$/, '');
 
       if (route === '/') return route;`
-const REPLACE1 = `// Remove assetPrefix from route.
+const REPLACE1 = `
+      // Remove assetPrefix from route.
       route = route.split(this.assetPrefix).join('')
       if (!route) { route = '/' }
       if (route[route.length - 1] === '/') return route + 'index';`
@@ -25,10 +26,11 @@ fs.readFile(FILE, 'utf8', function (err,data) {
   if (err) {
     return console.log(err);
   }
-  var result = data.replace(SEARCH1, REPLACE1);
-  var result = data.replace(SEARCH2, REPLACE2);
+  let newData = data
+  newData = newData.replace(SEARCH1, REPLACE1);
+  newData = newData.replace(SEARCH2, REPLACE2);
 
-  fs.writeFile(FILE, result, 'utf8', function (err) {
+  fs.writeFile(FILE, newData, 'utf8', function (err) {
      if (err) return console.log(err);
   });
 });

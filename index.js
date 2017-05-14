@@ -46,7 +46,7 @@ module.exports = function Export () {
 
     // load the top-level document
     const Document = require(join(nextPath, 'dist', 'pages', '_document.js')).default
-    del(exportPath).then(() => {
+    del(join(exportPath, '*')).then(() => {
       mkdir(exportPath, (err, d) => {
         fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', '-', 'app.js')) // await
 
