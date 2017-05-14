@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Export next.js sites to be served statically",
   "main": "index.js",
+  "bin": {
+    "next-export": "./cli.js",
+    "fix-next-for-export": "./fix-next.js",
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,6 +23,7 @@
   "author": "Tim Scanlin",
   "license": "MIT",
   "dependencies": {
+    "fs-extra": "^3.0.1",
     "glob": "^7.1.1",
     "glob-promise": "^3.1.0",
     "minimist": "^1.2.0",
