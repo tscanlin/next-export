@@ -8,6 +8,7 @@ const App = require('next/dist/lib/app').default
 const glob = require('glob-promise')
 const mkdir = require('mkdirp')
 const fs = require('fs-extra')
+const del = require('del')
 
 // Get next.config.js
 let nextConfig = {
@@ -29,7 +30,7 @@ module.exports = function Export () {
   const nextPath = join(dir, '.next')
   const pageDir = join(nextPath, 'dist', 'pages')
   const exportPath = join(dir, out)
-  const buildId = Date.now()
+  const buildId = Date.now() + ''
   const buildStats = {}
 
   glob(join(pageDir, '**', '*.js')).then((pages) => {
@@ -45,89 +46,89 @@ module.exports = function Export () {
 
     // load the top-level document
     const Document = require(join(nextPath, 'dist', 'pages', '_document.js')).default
-    mkdir(exportPath, (err, d) => {
-      fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', '-', 'app.js')) // await
+    del(exportPath).then(() => {
+      mkdir(exportPath, (err, d) => {
+        fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', '-', 'app.js')) // await
 
-      // App js path
-      const bundlePath = join(exportPath, nextConfig.assetPrefix, '_next', ''+buildId, 'page')
-      fs.copy(join(nextPath, 'bundles', 'pages'), bundlePath, (err, data) => {
-        return glob(join(bundlePath, '**', '*.js')).then((files) => {
-          return Promise.all(files.map((f) => fs.renameSync(f, f.split('.js').join(''))))
-        })
-      }) // await
-    })
+        // App js path
+        const bundlePath = join(exportPath, nextConfig.assetPrefix, '_next', buildId, 'page')
+        fs.copy(join(nextPath, 'bundles', 'pages'), bundlePath, (err, data) => {
+          return glob(join(bundlePath, '**', '*.js')).then((files) => {
+            return Promise.all(files.map((f) => fs.renameSync(f, f.split('.js').join(''))))
+          })
+        }) // await
+      })
 
-    // build all the pages
-    Promise.all(filteredPages.map((page) => {
-      const pathname = toRoute(pageDir, page)
-      const pageName = getPageName(pageDir, page)
-      const Component = require(page).default
-      const query = {}
-      const ctx = { pathname, query }
-      const bundlePath = join(nextPath, 'bundles', 'pages', pageName)
+      // build all the pages
+      return Promise.all(filteredPages.map((page) => {
+        const pathname = toRoute(pageDir, page)
+        const pageName = getPageName(pageDir, page)
+        const Component = require(page).default
+        const query = {}
+        const ctx = { pathname, query }
+        const bundlePath = join(nextPath, 'bundles', 'pages', pageName)
 
-      const newPathname = pathname === '/' ? '/index' : pathname
-      loadGetStaticInitialProps(Component, ctx).then((componentProps) => {
-        const app = createElement(App, {
-          Component,
-          props: componentProps,
-          router: new Router(pathname, query)
-        })
+        const newPathname = pathname === '/' ? '/index' : pathname
+        loadGetStaticInitialProps(Component, ctx).then((componentProps) => {
+          const app = createElement(App, {
+            Component,
+            props: componentProps,
+            router: new Router(pathname, query)
+          })
 
-        const renderPage = () => {
-          let html
-          let errorHtml
-          let head
-          try {
-            html = renderToString(app)
-            errorHtml = renderToString(createElement(errorComponent))
-          } finally {
-            head = Head.rewind() || defaultHead()
+          const renderPage = () => {
+            let html
+            let errorHtml
+            let head
+            try {
+              html = renderToString(app)
+              errorHtml = renderToString(createElement(errorComponent))
+            } finally {
+              head = Head.rewind() || defaultHead()
+            }
+
+            return { html, head, errorHtml }
           }
 
-          return { html, head, errorHtml }
-        }
+          // Always run get Initial props for the document so it renders the page.
+          const docProps = Document.getInitialProps(Object.assign(ctx, { renderPage }))
 
-        // Always run get Initial props for the document so it renders the page.
-        const docProps = Document.getInitialProps(Object.assign(ctx, { renderPage }))
+          const doc = createElement(Document, Object.assign({
+            __NEXT_DATA__: {
+              assetPrefix: nextConfig.assetPrefix,
+              component: app,
+              errorComponent: createElement(errorComponent),
+              props: componentProps,
+              pathname: pathname,
+              query,
 
-        const doc = createElement(Document, Object.assign({
-          __NEXT_DATA__: {
-            assetPrefix: nextConfig.assetPrefix,
-            component: app,
-            errorComponent: createElement(errorComponent),
-            props: componentProps,
-            pathname: pathname,
-            query,
+              buildId,
+              exported: true,
+            },
+            dev,
+            staticMarkup
+          }, docProps))
 
-            buildId,
-            exported: true,
-          },
-          dev,
-          staticMarkup
-        }, docProps))
+          const html = '<!DOCTYPE html>' + renderToString(doc)
 
-        const html = '<!DOCTYPE html>' + renderToString(doc)
-
-        // write files
-        if (pathname === '/index') {
-          mkdir(join(exportPath, nextConfig.assetPrefix), (err, d) => {
-            fs.writeFile(join(join(exportPath, nextConfig.assetPrefix), 'index.html'), html)
+          // write files
+          if (pathname === '/index') {
+            mkdir(join(exportPath, nextConfig.assetPrefix), (err, d) => {
+              fs.writeFile(join(join(exportPath, nextConfig.assetPrefix), 'index.html'), html)
+            })
+          }
+          mkdir(join(exportPath, nextConfig.assetPrefix, pathname), (err, d) => {
+            fs.writeFile(join(join(exportPath, nextConfig.assetPrefix, pathname), 'index.html'), html)
           })
-        }
-        mkdir(join(exportPath, nextConfig.assetPrefix, pathname), (err, d) => {
-          fs.writeFile(join(join(exportPath, nextConfig.assetPrefix, pathname), 'index.html'), html)
         })
-
+      }))
+    }).then(() => {
+      // copy over the static/ directory.
+      fs.copy(join(dir, 'static'), join(exportPath, nextConfig.assetPrefix, 'static'), () => {
+        console.log('> Export done.')
       })
-    }))
-
+    })
   })
-
-   // copy over the static/
-  fs.copy(join(dir, 'static'), join(exportPath, nextConfig.assetPrefix, 'static'))
-
-  console.log('> Export done.')
 }
 
 // Turn the path into a route
