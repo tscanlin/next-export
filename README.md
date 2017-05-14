@@ -15,7 +15,7 @@ Then add the scripts to your package.json
 
 ```json
 "scripts": {
-  "fix-next-for-export": "fix-next-for-export",
+  "next-export-fix": "next-export-fix",
   "next-export": "next-export"
 }
 ```
@@ -23,7 +23,7 @@ Then add the scripts to your package.json
 And run it
 
 ```bash
-npm run fix-next-for-export && npm run next-export
+npm run next-export-fix && npm run next-export
 ```
 
 
@@ -34,7 +34,7 @@ The `assetPrefix` option in `next.config.js` can be used to serve pages on githu
 This allows you to serve multiple static next.js apps on a single domain.
 
 
-## What does 'fix-next-for-export' do?
+## What does 'next-export-fix' do?
 
 It modifies some bits of `next/dist/lib/page-loader.js`
 

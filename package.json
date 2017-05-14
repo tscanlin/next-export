@@ -5,7 +5,7 @@
   "main": "index.js",
   "bin": {
     "next-export": "./cli.js",
-    "fix-next-for-export": "./fix-next.js"
+    "next-export-fix": "./next-export-fix.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
