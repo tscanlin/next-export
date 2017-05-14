@@ -8,7 +8,7 @@ const App = require('next/dist/lib/app').default
 const glob = require('glob-promise')
 const mkdir = require('mkdirp')
 const fs = require('fs-extra')
-let nextConfig = require('../next.config.js')
+let nextConfig = require('../../next.config.js')
 nextConfig = nextConfig || {}
 
 /**
