@@ -1,2 +1,3 @@
 # next-export
-Export next.js to be served statically
+
+Export next.js sites to be served statically
