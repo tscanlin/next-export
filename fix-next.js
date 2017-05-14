@@ -15,9 +15,9 @@ const REPLACE1 = `// Remove assetPrefix from route.
 const SEARCH2 = '_this3.registerEvents.emit(route, { error: error, page: page });\n'
  + '      };'
 const REPLACE2 = `_this3.registerEvents.emit(route, { error: error, page: page });
-        if (route === '/') {
-          _this3.pageCache['/index'] = { error: error, page: page };
-          _this3.registerEvents.emit('/index', { error: error, page: page });
+        if (route[route.length - 1] === '/') {
+          _this3.pageCache[route + 'index'] = { error: error, page: page };
+          _this3.registerEvents.emit(route + 'index', { error: error, page: page });
         }
       };`
 
