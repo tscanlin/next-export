@@ -1,6 +1,6 @@
 {
   "name": "next-export",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Export next.js sites to be served statically",
   "main": "index.js",
   "bin": {
