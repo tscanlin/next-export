@@ -4,7 +4,7 @@ const { resolve, join } = require('path')
 const { existsSync } = require('fs')
 const parseArgs = require('minimist')
 const Build = require('next/dist/server/build/index').default
-const Export = require('./export')
+const Export = require('./index')
 const { printAndExit } = require('next/dist/lib/utils')
 process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
