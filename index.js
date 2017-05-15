@@ -48,10 +48,6 @@ module.exports = function Export () {
     const Document = require(join(nextPath, 'dist', 'pages', '_document.js')).default
     del(join(exportPath, '*')).then(() => {
       mkdir(exportPath, (err, d) => {
-        // Keep app.js in the same folder as other files.
-        buildStats['app.js'] = {
-          hash: buildId
-        }
         fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', buildId, 'app.js')) // await
         // fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', '-', 'app.js')) // await
         // App js path
@@ -96,6 +92,11 @@ module.exports = function Export () {
 
           // Always run get Initial props for the document so it renders the page.
           const docProps = Document.getInitialProps(Object.assign(ctx, { renderPage }))
+
+          // Keep app.js in the same folder as other files by passing buildStats.
+          buildStats['app.js'] = {
+            hash: buildId
+          }
 
           const doc = createElement(Document, Object.assign({
             __NEXT_DATA__: {
