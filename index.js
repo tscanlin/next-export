@@ -46,7 +46,7 @@ module.exports = function Export () {
 
     // load the top-level document
     const Document = require(join(nextPath, 'dist', 'pages', '_document.js')).default
-    del(exportPath).then(() => {
+    del(join(exportPath, '*')).then(() => {
       mkdir(exportPath, (err, d) => {
         // Keep app.js in the same folder as other files.
         buildStats['app.js'] = {
