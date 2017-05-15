@@ -48,8 +48,12 @@ module.exports = function Export () {
     const Document = require(join(nextPath, 'dist', 'pages', '_document.js')).default
     del(exportPath).then(() => {
       mkdir(exportPath, (err, d) => {
-        fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', '-', 'app.js')) // await
-
+        // Keep app.js in the same folder as other files.
+        buildStats['app.js'] = {
+          hash: buildId
+        }
+        fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', buildId, 'app.js')) // await
+        // fs.copy(join(nextPath, 'app.js'), join(exportPath, nextConfig.assetPrefix, '_next', '-', 'app.js')) // await
         // App js path
         const bundlePath = join(exportPath, nextConfig.assetPrefix, '_next', buildId, 'page')
         fs.copy(join(nextPath, 'bundles', 'pages'), bundlePath, (err, data) => {
@@ -102,6 +106,7 @@ module.exports = function Export () {
               pathname: pathname,
               query,
               buildId,
+              buildStats,
             },
             dev,
             staticMarkup
