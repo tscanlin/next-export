@@ -2,6 +2,8 @@
 
 Export [next.js](https://github.com/zeit/next.js/) sites to be served statically. By default this outputs to a `sites` directory in the root of your project. Huge thank you to @matthewmueller for getting the initial PR going for this functionality (in: [#1576](https://github.com/zeit/next.js/pull/1576))!
 
+**NOTE:** This is only tested and ensured to work with next `2.3.1` +
+
 
 ## Getting Started
 
@@ -32,6 +34,11 @@ npm run next-export-fix && npm run next-export
 The `assetPrefix` option in `next.config.js` can be used to serve pages on github pages (example: [http://tscanlin.github.io/tocbot/](http://tscanlin.github.io/tocbot/))
 
 This allows you to serve multiple static next.js apps on a single domain.
+
+
+## Static sites with markdown
+
+For static sites with markdown I'd recommend you check out one of my other projects to convert a directory or markdown files to a mirrored directory of json [processto](https://github.com/tscanlin/processto).
 
 
 ## What does 'next-export-fix' do?
