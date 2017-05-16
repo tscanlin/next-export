@@ -38,7 +38,7 @@ This allows you to serve multiple static next.js apps on a single domain.
 
 ## Static sites with markdown
 
-For static sites with markdown I'd recommend you check out one of my other projects to convert a directory or markdown files to a mirrored directory of json [processto](https://github.com/tscanlin/processto).
+For static sites with markdown I'd recommend you check out one of my other projects to convert a directory or markdown files to a mirrored directory of json [processmd](https://github.com/tscanlin/processmd).
 
 
 ## What does 'next-export-fix' do?
