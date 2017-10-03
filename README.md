@@ -1,5 +1,7 @@
 # next-export
 
+**DEPRECATED** next.js now supports this natively as of v3.0.0.
+
 Export [next.js](https://github.com/zeit/next.js/) sites to be served statically. By default this outputs to a `sites` directory in the root of your project. Huge thank you to @matthewmueller for getting the initial PR going for this functionality (in: [#1576](https://github.com/zeit/next.js/pull/1576))!
 
 **NOTE:** This is only tested and ensured to work with next `2.3.1` +
